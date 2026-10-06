@@ -1,27 +1,308 @@
 <!doctype html>
-<html lang="hi"><head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>🍀 Lucky Sunday</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <style>
-body{margin:0;font-family:Arial,sans-serif;background:#f5f7fb;color:#111}.app{max-width:520px;margin:auto;min-height:100vh;background:#fff;padding:24px 18px 90px}
-h1{margin:0 0 6px}.sub{color:#666;margin-bottom:22px}.card{border:1px solid #e5e7eb;border-radius:18px;padding:20px;margin:14px 0;box-shadow:0 5px 18px #0001}
-.ticket{font-size:30px;font-weight:800;margin:12px 0}.muted{color:#666;font-size:14px}button{border:0;border-radius:12px;padding:14px 18px;font-size:16px;font-weight:700}.primary{background:#1264ff;color:#fff;width:100%}
-nav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid #ddd;display:flex;justify-content:center;gap:12px;padding:10px}nav button{background:#fff}
-.hidden{display:none}.success{background:#ecfdf3;border:1px solid #bbf7d0;color:#166534;padding:12px;border-radius:12px;margin-top:12px}
+body{margin:0;font-family:Arial,sans-serif;background:#f5f7fb;color:#111}
+.app{max-width:520px;margin:auto;min-height:100vh;background:#fff;padding:24px 18px 90px}
+h1{margin:0 0 6px}
+.sub{color:#666;margin-bottom:22px}
+.card{border:1px solid #e5e7eb;border-radius:18px;padding:20px;margin:14px 0;box-shadow:0 5px 18px #0001}
+.ticket{font-size:30px;font-weight:800;margin:12px 0}
+.muted{color:#666;font-size:14px}
+button{border:0;border-radius:12px;padding:14px 18px;font-size:16px;font-weight:700}
+.primary{background:#1264ff;color:#fff;width:100%}
+nav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid #ddd;display:flex;justify-content:center;gap:12px;padding:10px}
+nav button{background:#fff}
+.hidden{display:none}
+.success{background:#ecfdf3;border:1px solid #bbf7d0;color:#166534;padding:12px;border-radius:12px;margin-top:12px}
+.error{background:#fef2f2;border:1px solid #fecaca;color:#991b1b;padding:12px;border-radius:12px;margin-top:12px}
 input{width:100%;padding:13px;border:1px solid #ddd;border-radius:10px;margin:7px 0 12px;font-size:16px;box-sizing:border-box}
-</style></head><body>
-<div class="app"><h1>🍀 Lucky Sunday</h1><div class="sub">हर रविवार Free Lucky Draw</div>
-<section id="home"><div class="card"><h2>🎟️ Free Entry</h2><p class="muted">अपना free demo ticket बनाएं।</p><button class="primary" onclick="getTicket()">FREE ENTRY</button><div id="msg"></div></div>
-<div class="card"><h2>🏆 Winner</h2><p class="muted">अगला winner यहाँ दिखाया जाएगा।</p></div></section>
-<section id="ticket" class="hidden"><div class="card"><h2>🎟️ आपका Ticket</h2><div id="ticketNo" class="ticket">—</div><p class="muted">यह demo ticket आपके browser में save रहता है।</p></div>
-<div class="card"><h3>अपनी जानकारी</h3><input id="name" placeholder="नाम (optional)"><input id="mobile" placeholder="मोबाइल (optional)" inputmode="numeric"><button class="primary" onclick="saveInfo()">SAVE</button><div id="saveMsg"></div></div></section>
-<section id="history" class="hidden"><div class="card"><h2>📜 History</h2><div id="historyBox" class="muted">अभी कोई ticket नहीं है।</div></div></section></div>
-<nav><button onclick="show('home')">🏠 Home</button><button onclick="show('ticket')">🎟️ Ticket</button><button onclick="show('history')">📜 History</button></nav>
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<h1>🍀 Lucky Sunday</h1>
+<div class="sub">हर रविवार Free Lucky Draw</div>
+
+<section id="home">
+
+<div class="card">
+<h2>🎟️ Free Entry</h2>
+<p class="muted">अपना free ticket बनाएं और Lucky Sunday draw में entry लें।</p>
+
+<button class="primary" onclick="getTicket()">FREE ENTRY</button>
+
+<div id="msg"></div>
+</div>
+
+<div class="card">
+<h2>🏆 Winner</h2>
+<p class="muted">अगला winner यहाँ दिखाया जाएगा।</p>
+</div>
+
+</section>
+
+
+<section id="ticket" class="hidden">
+
+<div class="card">
+<h2>🎟️ आपका Ticket</h2>
+
+<div id="ticketNo" class="ticket">—</div>
+
+<p class="muted">
+आपका ticket Lucky Sunday database में save रहेगा।
+</p>
+</div>
+
+
+<div class="card">
+
+<h3>अपनी जानकारी</h3>
+
+<input id="name" placeholder="नाम (optional)">
+
+<input id="mobile" placeholder="मोबाइल (optional)" inputmode="numeric">
+
+<button class="primary" onclick="saveInfo()">SAVE</button>
+
+<div id="saveMsg"></div>
+
+</div>
+
+</section>
+
+
+<section id="history" class="hidden">
+
+<div class="card">
+
+<h2>📜 History</h2>
+
+<div id="historyBox" class="muted">
+अभी कोई ticket नहीं है।
+</div>
+
+</div>
+
+</section>
+
+</div>
+
+
+<nav>
+
+<button onclick="show('home')">🏠 Home</button>
+
+<button onclick="show('ticket')">🎟️ Ticket</button>
+
+<button onclick="show('history')">📜 History</button>
+
+</nav>
+
+
 <script>
-let ticket=localStorage.getItem('luckySundayTicket'),info=JSON.parse(localStorage.getItem('luckySundayInfo')||'null');
-function makeTicket(){return 'LS-'+Math.floor(100000+Math.random()*900000)}
-function getTicket(){if(!ticket){ticket=makeTicket();localStorage.setItem('luckySundayTicket',ticket)}document.getElementById('msg').innerHTML='<div class="success">आपका ticket बन गया: <b>'+ticket+'</b></div>';render()}
-function saveInfo(){info={name:document.getElementById('name').value.trim(),mobile:document.getElementById('mobile').value.trim()};localStorage.setItem('luckySundayInfo',JSON.stringify(info));document.getElementById('saveMsg').innerHTML='<div class="success">जानकारी browser में save हो गई।</div>'}
-function show(id){['home','ticket','history'].forEach(x=>document.getElementById(x).classList.toggle('hidden',x!==id));render()}
-function render(){document.getElementById('ticketNo').textContent=ticket||'—';if(info){document.getElementById('name').value=info.name||'';document.getElementById('mobile').value=info.mobile||''}document.getElementById('historyBox').innerHTML=ticket?'<p><b>Ticket:</b> '+ticket+'</p><p><b>Status:</b> Free Entry</p>':'अभी कोई ticket नहीं है।'}render();
-</script></body></html>
+
+const SUPABASE_URL = "https://bmxrwfhmplcvtnsfsirc.supabase.co";
+
+const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_dENpqH1vtwt26YRTb3fOkw_MArpHSyF";
+
+const supabaseClient = window.supabase.createClient(
+SUPABASE_URL,
+SUPABASE_PUBLISHABLE_KEY
+);
+
+
+let ticket = localStorage.getItem('luckySundayTicket');
+
+let info = JSON.parse(
+localStorage.getItem('luckySundayInfo') || 'null'
+);
+
+
+function makeTicket(){
+
+return 'LS-' + Math.floor(
+100000 + Math.random() * 900000
+);
+
+}
+
+
+async function getTicket(){
+
+if(ticket){
+
+document.getElementById('msg').innerHTML =
+'<div class="success">आपका ticket पहले से बना हुआ है: <b>'
++ ticket +
+'</b></div>';
+
+render();
+
+return;
+
+}
+
+
+ticket = makeTicket();
+
+const { data, error } = await supabaseClient
+.from('tickets')
+.insert([
+{
+ticket_no: ticket
+}
+])
+.select();
+
+
+if(error){
+
+console.error(error);
+
+ticket = null;
+
+document.getElementById('msg').innerHTML =
+'<div class="error">Ticket save नहीं हो पाया। कृपया दोबारा कोशिश करें।</div>';
+
+return;
+
+}
+
+
+localStorage.setItem(
+'luckySundayTicket',
+ticket
+);
+
+
+document.getElementById('msg').innerHTML =
+'<div class="success">🎉 आपका ticket बन गया: <b>'
++ ticket +
+'</b></div>';
+
+
+render();
+
+}
+
+
+async function saveInfo(){
+
+if(!ticket){
+
+document.getElementById('saveMsg').innerHTML =
+'<div class="error">पहले FREE ENTRY से ticket बनाएं।</div>';
+
+return;
+
+}
+
+
+info = {
+
+name: document.getElementById('name').value.trim(),
+
+mobile: document.getElementById('mobile').value.trim()
+
+};
+
+
+localStorage.setItem(
+'luckySundayInfo',
+JSON.stringify(info)
+);
+
+
+const { error } = await supabaseClient
+.from('tickets')
+.update({
+name: info.name,
+mobile: info.mobile
+})
+.eq('ticket_no', ticket);
+
+
+if(error){
+
+console.error(error);
+
+document.getElementById('saveMsg').innerHTML =
+'<div class="error">जानकारी database में save नहीं हो पाई।</div>';
+
+return;
+
+}
+
+
+document.getElementById('saveMsg').innerHTML =
+'<div class="success">✅ जानकारी successfully save हो गई।</div>';
+
+}
+
+
+function show(id){
+
+['home','ticket','history'].forEach(function(x){
+
+document
+.getElementById(x)
+.classList
+.toggle('hidden', x !== id);
+
+});
+
+render();
+
+}
+
+
+function render(){
+
+document.getElementById('ticketNo').textContent =
+ticket || '—';
+
+
+if(info){
+
+document.getElementById('name').value =
+info.name || '';
+
+document.getElementById('mobile').value =
+info.mobile || '';
+
+}
+
+
+document.getElementById('historyBox').innerHTML =
+
+ticket
+
+?
+
+'<p><b>Ticket:</b> ' + ticket + '</p>' +
+'<p><b>Status:</b> Free Entry</p>'
+
+:
+
+'अभी कोई ticket नहीं है।';
+
+}
+
+
+render();
+
+</script>
+
+</body>
+  </html>
