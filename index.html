@@ -160,7 +160,7 @@ const { data, error } = await supabaseClient
 .from('tickets')
 .insert([
 {
-ticket_no: ticket
+ticket_number: ticket
 }
 ])
 .select();
@@ -230,7 +230,7 @@ const { error } = await supabaseClient
 name: info.name,
 mobile: info.mobile
 })
-..eq('ticket_number', ticket);
+.eq('ticket_number', ticket);
 
 
 if(error){
